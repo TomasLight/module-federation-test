@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "yarn workspaces foreach run build",
+    "run": "yarn workspace @app/server run start"
+  },
+  "workspaces": [
+    "app/*",
+    "libs/*"
+  ],
+  "devDependencies": {
+    "typescript": "4.7.4"
+  }
+}

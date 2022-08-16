@@ -24,11 +24,7 @@ yarn-error.log*
 /.idea/
 
 .yarn/**/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
 .pnp.*
 /storybook/storybook-static
 report.html
+tsconfig.tsbuildinfo

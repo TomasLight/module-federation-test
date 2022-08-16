@@ -5,7 +5,6 @@ import path from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import { Configuration, container, ProgressPlugin } from 'webpack';
 import { merge } from 'webpack-merge';
-// import { ImportReplacePlugin } from 'import-replace-plugin';
 
 import { paths } from './paths';
 import { cssRule, fontRule, svgRule, tsRule } from './rules';
@@ -22,25 +21,11 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
         publicPath: '/',
       },
 
-      entry: path.join(paths.application, 'src', 'index.tsx'),
+      entry: path.join(paths.application, 'src', 'index.ts'),
       resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        // alias: {
-        //   '~': [
-        //     //
-        //     paths.join(paths.libs, 'components', 'src'),
-        //     paths.join(paths.libs, 'core', 'src'),
-        //   ],
-        //   // '~': paths.join(paths.libs, 'components', 'src'),
-        // },
-        modules: [
-          // paths.join(paths.libs, 'components', 'src'),
-          // paths.join(paths.libs, 'core', 'src'),
-          paths.nodeModules,
-          paths.rootNodeModules,
-        ],
+        modules: [paths.nodeModules, paths.rootNodeModules],
         plugins: [
-          // new ImportReplacePlugin(),
           new TsconfigPathsPlugin({
             configFile: path.join(paths.libs, 'components', 'tsconfig.json'),
             logLevel: 'INFO',
@@ -66,6 +51,11 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
             },
           ],
         }),
+        new HtmlWebpackPlugin({
+          template: paths.join(paths.public, 'index.html'),
+          filename: paths.join(paths.dist, 'index.html'),
+          inject: 'body',
+        }),
         new ModuleFederationPlugin({
           name: 'client',
           shared: [
@@ -84,37 +74,22 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
             {
               '@libs/utils': {
                 import: '@libs/utils',
-                // requiredVersion: require('../../../libs/utils/package.json').version,
                 requiredVersion: false,
               },
             },
             {
               '@libs/core': {
                 import: '@libs/core',
-                // requiredVersion: require('../../../libs/core/package.json').version,
                 requiredVersion: false,
               },
             },
             {
               '@libs/components': {
                 import: '@libs/components',
-                // requiredVersion: require('../../../libs/components/package.json').version,
-                requiredVersion: false,
-              },
-            },
-            {
-              '@libs/import-replace-plugin': {
-                import: '@libs/import-replace-plugin',
-                // requiredVersion: require('../../../libs/components/package.json').version,
                 requiredVersion: false,
               },
             },
           ],
-        }),
-        new HtmlWebpackPlugin({
-          template: paths.join(paths.public, 'index.html'),
-          filename: paths.join(paths.dist, 'index.html'),
-          inject: 'body',
         }),
       ],
 

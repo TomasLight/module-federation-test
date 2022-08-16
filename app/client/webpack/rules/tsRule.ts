@@ -4,7 +4,13 @@ import tsNameOf from 'ts-nameof';
 
 function tsRule(mode: Configuration['mode']): Configuration {
   return {
-    plugins: [new ForkTsCheckerWebpackPlugin()],
+    plugins: [
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          build: true,
+        },
+      }),
+    ],
     module: {
       rules: [
         {
@@ -16,7 +22,6 @@ function tsRule(mode: Configuration['mode']): Configuration {
                 getCustomTransformers: () => ({ before: [tsNameOf] }),
               },
             },
-            'import-replace-plugin',
           ],
           exclude: /\.test\.tsx?$/,
         },

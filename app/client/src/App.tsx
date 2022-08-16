@@ -7,14 +7,14 @@ function App() {
       <Button
         onClick={() => {
           coreMethod();
-          fetch('localhost:8080/api/env/config')
-            .then((response) => {
-              debugger;
-              console.log(response);
+
+          fetch('/api/env/config')
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('request is succeeded', data);
             })
-            .catch((error) => {
-              debugger;
-              console.log(error);
+            .catch(() => {
+              console.log('request is failed');
             });
         }}
       />

@@ -1,7 +1,7 @@
 {
   "references": [
     {
-      "path": "../utils"
+      "path": "../../libs/utils"
     }
   ],
   "compilerOptions": {
@@ -29,10 +29,19 @@
     "strict": false,
     "target": "es6"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "ts-node": {
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": false,
+      "target": "esnext"
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

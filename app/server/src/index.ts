@@ -1,41 +1,69 @@
+import { logger } from '@libs/utils';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
 import path from 'path';
-import webpack from "webpack";
-import webpackMiddleware from "webpack-dev-middleware";
-import { handleSpaRoutes } from "./handleSpaRoutes";
-import { apiMiddleware } from "./middleware/apiMiddleware";
-import { getApiByRequest } from "./middleware/getApiByRequest";
+import webpack from 'webpack';
+import { WebSocketServer } from 'ws';
+import webpackMiddleware from 'webpack-dev-middleware';
+import hotMiddleware from 'webpack-hot-middleware';
+import ConfigApi from './api/env/config';
+import { handleSpaRoutes } from './handleSpaRoutes';
+import { configDev as devWebpackConfig } from '../../client/webpack/config.dev';
 
+const uiPath = path.join(__dirname, '..', '..', 'dist');
 
 const app = express();
 app.disable('x-powered-by');
+app.use(compression());
+app.use(cookieParser());
+
+app.use((request, response, next) => {
+  logger(request.url);
+  next();
+});
 
 if (process.env.NODE_ENV === 'development') {
-  const devWebpack = require('../../client/webpack/config.dev');
-  const compiler = webpack(devWebpack);
+  console.log('attach webpack middleware to the server');
+  const compiler = webpack(devWebpackConfig);
   app.use(
     webpackMiddleware(compiler, {
       // webpack-dev-middleware options
+      publicPath: devWebpackConfig.output.publicPath,
     })
   );
+
+  app.use(
+    hotMiddleware(compiler, {
+      log: console.log,
+      path: '/__webpack_hmr',
+      heartbeat: 10 * 1000,
+    })
+  );
+} else {
+  app.use(express.static(uiPath));
 }
-
-app.use(compression());
-const uiPath = path.join(__dirname, '..', '..', 'dist');
-
-app.use(express.static(uiPath));
-app.use(cookieParser());
 
 const httpServer = http.createServer(app);
 
-const hostPort = 8080;
+const hostPort = 3000;
 const host = 'localhost';
 httpServer.listen(hostPort, host, () => {
-  console.log(`Host https://${host}:${hostPort}`);
+  console.log(`Host http://${host}:${hostPort}`);
 });
 
-app.use(apiMiddleware(getApiByRequest));
-handleSpaRoutes(app, uiPath);
+app.use((request: Request, response: Response, next: NextFunction) => {
+  if (!request.url.includes('/api/env/config')) {
+    return next();
+  }
+
+  new ConfigApi(request, response).use();
+});
+
+if (process.env.NODE_ENV === 'development') {
+  // establish connection with WebSocket and client for Hot Module Reloading
+  const webSocketServer = new WebSocketServer({ server: httpServer });
+} else {
+  handleSpaRoutes(app, uiPath);
+}

@@ -9,7 +9,6 @@
     "strict": true,
     "esModuleInterop": true,
 
-    "outDir": "dist",
     "declaration": true,
     "sourceMap": true,
     "jsx": "react-jsx",
@@ -20,11 +19,8 @@
     "strictNullChecks": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "noEmit": false,
     "isolatedModules": true,
 
     "paths": {
@@ -36,6 +32,7 @@
         "./core/src/*"
       ]
     }
-  }
+  },
+  "files": []
 }
   

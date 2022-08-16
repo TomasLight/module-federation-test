@@ -2,5 +2,8 @@
   "name": "@libs/utils",
   "version": "0.0.1",
   "private": true,
-  "main": "./src/index.ts"
+  "main": "./src/index.ts",
+  "scripts": {
+    "build:tsc": "tsc --build tsconfig.json"
+  }
 }

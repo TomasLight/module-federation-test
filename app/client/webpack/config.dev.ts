@@ -13,12 +13,6 @@ const configDev = merge<Configuration & { devServer?: DevServerConfiguration }>(
   devtool: 'source-map',
 
   entry: [
-    // Runtime code for hot module replacement
-    'webpack/hot/dev-server.js',
-
-    // Dev server client for web socket transport, hot and live reload logic
-    'webpack-dev-server/client/index.js?hot=true&live-reload=true',
-
     // connects to the server to receive notifications when the bundle rebuilds and then updates your client bundle accordingly.
     'webpack-hot-middleware/client',
 

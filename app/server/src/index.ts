@@ -5,7 +5,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
 import path from 'path';
 import webpack from 'webpack';
-import { WebSocketServer } from 'ws';
 import webpackMiddleware from 'webpack-dev-middleware';
 import hotMiddleware from 'webpack-hot-middleware';
 import ConfigApi from './api/env/config';
@@ -29,7 +28,6 @@ if (process.env.NODE_ENV === 'development') {
   const compiler = webpack(devWebpackConfig);
   app.use(
     webpackMiddleware(compiler, {
-      // webpack-dev-middleware options
       publicPath: devWebpackConfig.output.publicPath,
     })
   );
@@ -61,9 +59,6 @@ app.use((request: Request, response: Response, next: NextFunction) => {
   new ConfigApi(request, response).use();
 });
 
-if (process.env.NODE_ENV === 'development') {
-  // establish connection with WebSocket and client for Hot Module Reloading
-  const webSocketServer = new WebSocketServer({ server: httpServer });
-} else {
+if (process.env.NODE_ENV !== 'development') {
   handleSpaRoutes(app, uiPath);
 }

@@ -29,7 +29,6 @@
 		"ts-node": "10.9.1",
 		"webpack": "5.74.0",
 		"webpack-dev-middleware": "5.3.3",
-		"webpack-hot-middleware": "2.25.2",
-		"ws": "8.8.1"
+		"webpack-hot-middleware": "2.25.2"
 	}
 }

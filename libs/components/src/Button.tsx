@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { CoreContext } from '@libs/core';
 import { DEFAULT_BUTTON_NAME } from '~/constants';
+import classes from './Button.module.scss';
 
 type Props = {
   onClick: (mayBe?: string) => void;
@@ -15,7 +16,11 @@ const Button = (props: Props) => {
     buttonName = context.buttonName;
   }
 
-  return <button onClick={() => onClick()}>{buttonName}</button>;
+  return (
+    <button className={classes.root} onClick={() => onClick()}>
+      {buttonName}
+    </button>
+  );
 };
 
 export { Button };

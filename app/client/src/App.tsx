@@ -1,9 +1,11 @@
-import { Button } from '@libs/components';
+import { Button, HmrIndicator } from '@libs/components';
 import { CoreContext, coreMethod } from '@libs/core';
 
 function App() {
   return (
     <CoreContext.Provider value={{ buttonName: 'App button' }}>
+      <HmrIndicator />
+
       <Button
         onClick={() => {
           coreMethod();

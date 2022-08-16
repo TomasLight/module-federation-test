@@ -36,6 +36,11 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
             logLevel: 'INFO',
             mainFields: ['browser', 'module', 'main'],
           }),
+          new TsconfigPathsPlugin({
+            configFile: path.join(paths.libs, 'utils', 'tsconfig.json'),
+            logLevel: 'INFO',
+            mainFields: ['browser', 'module', 'main'],
+          }),
         ],
       },
 

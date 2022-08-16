@@ -29,19 +29,5 @@
     "strict": false,
     "target": "es6"
   },
-  "ts-node": {
-    "compilerOptions": {
-      "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "skipLibCheck": true,
-      "strict": false,
-      "target": "esnext"
-    }
-  },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }

@@ -2,8 +2,7 @@
   "name": "@app/client",
   "private": true,
   "scripts": {
-    "build": "webpack --config webpack/config.ts",
-    "test": "jest"
+    "build": "webpack --config webpack/config.ts"
   },
   "dependencies": {
     "react": "17.0.2",

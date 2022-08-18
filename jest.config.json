@@ -1,0 +1,5 @@
+{
+  "projects": ["<rootDir>/libs/*"],
+  "testMatch": ["<rootDir>/**/*.test.tsx?&"],
+  "transformIgnorePatterns": ["<rootDir>/(node_modules)/"]
+}

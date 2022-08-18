@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { CoreContext } from '@libs/core';
-import { DEFAULT_BUTTON_NAME } from '~/constants';
+import { DEFAULT_BUTTON_NAME } from '~components/constants';
 import classes from './Button.module.scss';
 
 type Props = {

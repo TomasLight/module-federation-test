@@ -1,5 +1,5 @@
 import { logger } from '@libs/utils';
-import { generateId } from '~/generateId';
+import { generateId } from '~core/generateId';
 
 export function coreMethod() {
   const id = generateId();

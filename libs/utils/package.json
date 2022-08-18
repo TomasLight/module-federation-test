@@ -1,6 +1,9 @@
 {
   "name": "@libs/utils",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
-  "main": "./src/index.ts"
+  "main": "./src/index.ts",
+  "dependencies": {
+    "react": "17.0.2"
+  }
 }

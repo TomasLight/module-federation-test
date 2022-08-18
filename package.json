@@ -3,8 +3,9 @@
   "private": true,
   "main": "./src/index.ts",
   "scripts": {
-    "dev": "yarn workspace @app/server run dev",
-    "build": "yarn workspaces foreach run build"
+    "build": "yarn workspace @app/server run build",
+    "serve": "yarn workspace @app/server run serve",
+    "dev": "yarn workspace @app/server run dev"
   },
   "workspaces": [
     "app/*",

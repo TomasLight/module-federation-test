@@ -1,9 +1,9 @@
-import { merge } from "webpack-merge";
-import { commonConfig } from "./config.common";
+import { merge } from 'webpack-merge';
+import { commonConfig } from './config.common';
+import { paths } from './paths';
 
-// todo: do we need any optimizations at all?
-//  because of we download app once to mobile and install it
-const prodConfig = merge(commonConfig("production"), {
+const prodConfig = merge(commonConfig('production'), {
+  entry: paths.entryPoint,
   stats: {
     builtAt: true,
     errors: true,
@@ -12,9 +12,8 @@ const prodConfig = merge(commonConfig("production"), {
   },
   optimization: {
     minimize: true,
-    chunkIds: "named",
+    chunkIds: 'named',
   },
 });
 
-export { prodConfig };
 export default prodConfig;

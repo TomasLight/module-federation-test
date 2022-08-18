@@ -1,25 +1,23 @@
-import path from 'path';
 import { Configuration, HotModuleReplacementPlugin } from 'webpack';
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 import { merge } from 'webpack-merge';
 import { commonConfig } from './config.common';
-// import { generateCertificate } from "./generateCertificate";
+// import { generateCertificate } from "./generateCertificate"; // implement for https
 import { paths } from './paths';
 
 // const certificate = generateCertificate();
-console.log('this is a dev config');
 
-const configDev = merge<Configuration & { devServer?: DevServerConfiguration }>(commonConfig('development'), {
+const devConfig = merge<Configuration & { devServer?: DevServerConfiguration }>(commonConfig('development'), {
   devtool: 'source-map',
 
   entry: [
     // connects to the server to receive notifications when the bundle rebuilds and then updates your client bundle accordingly.
     'webpack-hot-middleware/client',
 
-    path.join(paths.application, 'src', 'index.ts'),
+    paths.entryPoint,
   ],
   devServer: {
-    static: paths.dist,
+    static: paths.clientDist,
     historyApiFallback: true,
 
     // Dev server client for web socket transport, hot and live reload logic
@@ -54,4 +52,4 @@ const configDev = merge<Configuration & { devServer?: DevServerConfiguration }>(
   },
 });
 
-export { configDev };
+export { devConfig };

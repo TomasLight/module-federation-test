@@ -2,21 +2,19 @@
 	"name": "@app/server",
 	"version": "0.0.0",
 	"license": "MIT",
-	"main": "../dist/server.js",
-	"files": [
-		"../dist/**/*"
-	],
 	"scripts": {
-		"run:node": "node ../dist/server.js",
-		"dev": "cross-env NODE_ENV=development ts-node src/index.ts",
-		"build": "tsc --build tsconfig.json"
+		"build": "npm-run-all build:client build:server",
+		"build:server": "tsc --build tsconfig.json",
+		"build:client": "ts-node src/buildClient.ts",
+		"serve": "node ../../dist/server/src/index.js",
+		"--": "",
+		"dev": "cross-env NODE_ENV=development ts-node src/index.ts"
 	},
 	"dependencies": {
 		"body-parser": "1.20.0",
 		"compression": "1.7.4",
 		"cookie": "0.5.0",
 		"cookie-parser": "1.4.6",
-		"cross-env": "7.0.3",
 		"express": "4.18.1"
 	},
 	"devDependencies": {
@@ -26,6 +24,8 @@
 		"@types/node": "18.7.5",
 		"@types/webpack": "5.28.0",
 		"@types/webpack-hot-middleware": "2.25.6",
+		"cross-env": "7.0.3",
+		"npm-run-all": "4.1.5",
 		"ts-node": "10.9.1",
 		"webpack": "5.74.0",
 		"webpack-dev-middleware": "5.3.3",

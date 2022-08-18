@@ -3,13 +3,43 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import { Configuration, container, ProgressPlugin } from 'webpack';
+import { Configuration, container, ProgressPlugin, ResolvePluginInstance } from 'webpack';
 import { merge } from 'webpack-merge';
-
 import { paths } from './paths';
 import { cssRule, fontRule, svgRule, tsRule } from './rules';
 
 const { ModuleFederationPlugin } = container;
+
+type ModuleFederationOptions = ConstructorParameters<typeof ModuleFederationPlugin>[0];
+type InferArray<T> = T extends Array<infer Item> ? Item : never;
+type TsLib = {
+  resolvePlugin: ResolvePluginInstance;
+  options: InferArray<ModuleFederationOptions['shared']>;
+};
+
+function makeTsLib(name: string): TsLib {
+  return {
+    resolvePlugin: new TsconfigPathsPlugin({
+      configFile: path.join(paths.libs, name, 'tsconfig.json'),
+      logLevel: 'INFO',
+      mainFields: ['browser', 'module', 'main'],
+    }),
+
+    options: {
+      [`@libs/${name}`]: {
+        import: `@libs/${name}`,
+        requiredVersion: false,
+      },
+    },
+  };
+}
+
+const tsLibs = [
+  //
+  makeTsLib('components'),
+  makeTsLib('core'),
+  makeTsLib('utils'),
+];
 
 const commonConfig = (mode: Configuration['mode']): Configuration => {
   return merge<Configuration>(
@@ -17,31 +47,13 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
       mode,
       target: 'web',
       output: {
-        path: paths.dist,
+        path: paths.clientDist,
         publicPath: '/',
       },
 
-      entry: path.join(paths.application, 'src', 'index.ts'),
       resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        modules: [paths.nodeModules, paths.rootNodeModules],
-        plugins: [
-          new TsconfigPathsPlugin({
-            configFile: path.join(paths.libs, 'components', 'tsconfig.json'),
-            logLevel: 'INFO',
-            mainFields: ['browser', 'module', 'main'],
-          }),
-          new TsconfigPathsPlugin({
-            configFile: path.join(paths.libs, 'core', 'tsconfig.json'),
-            logLevel: 'INFO',
-            mainFields: ['browser', 'module', 'main'],
-          }),
-          new TsconfigPathsPlugin({
-            configFile: path.join(paths.libs, 'utils', 'tsconfig.json'),
-            logLevel: 'INFO',
-            mainFields: ['browser', 'module', 'main'],
-          }),
-        ],
+        plugins: [...tsLibs.map((lib) => lib.resolvePlugin)],
       },
 
       plugins: [
@@ -51,14 +63,14 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
           patterns: [
             {
               from: paths.public,
-              to: paths.dist,
+              to: paths.clientDist,
               filter: (filepath) => !filepath.endsWith('index.html'),
             },
           ],
         }),
         new HtmlWebpackPlugin({
           template: paths.join(paths.public, 'index.html'),
-          filename: paths.join(paths.dist, 'index.html'),
+          filename: paths.join(paths.clientDist, 'index.html'),
           inject: 'body',
         }),
         new ModuleFederationPlugin({
@@ -76,24 +88,7 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
                 requiredVersion: false,
               },
             },
-            {
-              '@libs/utils': {
-                import: '@libs/utils',
-                requiredVersion: false,
-              },
-            },
-            {
-              '@libs/core': {
-                import: '@libs/core',
-                requiredVersion: false,
-              },
-            },
-            {
-              '@libs/components': {
-                import: '@libs/components',
-                requiredVersion: false,
-              },
-            },
+            ...tsLibs.map((lib) => lib.options),
           ],
         }),
       ],

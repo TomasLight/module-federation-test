@@ -1,5 +1,18 @@
-import { Button, HmrIndicator } from '@libs/components';
-import { CoreContext, coreMethod } from '@libs/core';
+import { HmrIndicator } from '@libs/components';
+import { VFC } from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import loadable from '@loadable/component';
+
+const fallback = <>loading...</>;
+
+const WelcomePage = loadable(() => import(/* webpackChunkName: "page-welcome" */ '@pages/welcome'), {
+  resolveComponent: (components) => components.WelcomePage,
+  fallback,
+}) as VFC;
+const AboutPage = loadable(() => import(/* webpackChunkName: "page-about" */ '@pages/about'), {
+  resolveComponent: (components) => components.AboutPage,
+  fallback,
+}) as VFC;
 
 // use something like "dotenv" to get access to your env variables in web
 // const isDevMode = process?.env?.NODE_ENV === 'development';
@@ -7,24 +20,18 @@ const isDevMode = false;
 
 function App() {
   return (
-    <CoreContext.Provider value={{ buttonName: 'App button' }}>
+    <BrowserRouter>
       {isDevMode && <HmrIndicator />}
 
-      <Button
-        onClick={() => {
-          coreMethod();
-
-          fetch('/api/env/config')
-            .then((response) => response.json())
-            .then((data) => {
-              console.log('request is succeeded', data);
-            })
-            .catch(() => {
-              console.log('request is failed');
-            });
-        }}
-      />
-    </CoreContext.Provider>
+      <Switch>
+        <Route path="/about">
+          <AboutPage />
+        </Route>
+        <Route path={['/welcome', '/']}>
+          <WelcomePage />
+        </Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 

@@ -2,15 +2,22 @@
   "name": "@app/client",
   "private": true,
   "dependencies": {
+    "@loadable/component": "5.15.2",
+    "@pages/about": "0.0.0",
+    "@pages/welcome": "0.0.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-router": "5.3.3",
+    "react-router-dom": "5.3.3"
   },
   "devDependencies": {
     "@testing-library/user-event": "14.4.3",
+    "@types/loadable__component": "5.13.4",
     "@types/loader-utils": "2.0.3",
     "@types/node": "18.7.5",
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.11",
+    "@types/react-router-dom": "5.3.3",
     "@types/ts-nameof": "4.2.1",
     "@types/webpack": "5.28.0",
     "clean-webpack-plugin": "4.0.0",

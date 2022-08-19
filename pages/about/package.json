@@ -1,0 +1,17 @@
+{
+  "name": "@pages/about",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@libs/components": "0.0.0",
+    "@libs/core": "0.0.0",
+    "@libs/utils": "0.0.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-router-dom": "5.3.3"
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "5.3.3"
+  }
+}

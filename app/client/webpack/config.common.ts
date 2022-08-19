@@ -12,33 +12,65 @@ const { ModuleFederationPlugin } = container;
 
 type ModuleFederationOptions = ConstructorParameters<typeof ModuleFederationPlugin>[0];
 type InferArray<T> = T extends Array<infer Item> ? Item : never;
-type TsLib = {
-  resolvePlugin: ResolvePluginInstance;
-  options: InferArray<ModuleFederationOptions['shared']>;
+type SharedModule = {
+  sharedConfig: InferArray<ModuleFederationOptions['shared']>;
+
+  // if module has "paths" in its tsconfig.json, so you should add plugin to support them
+  typescriptPathAliasesResolvePlugin?: ResolvePluginInstance;
 };
 
-function makeTsLib(name: string): TsLib {
-  return {
-    resolvePlugin: new TsconfigPathsPlugin({
-      configFile: path.join(paths.libs, name, 'tsconfig.json'),
-      logLevel: 'INFO',
-      mainFields: ['browser', 'module', 'main'],
-    }),
+const makeLibsModule = (name: string) =>
+  makeSharedModule({
+    parentFolderName: 'libs',
+    name: name,
+    hasPathsInTsConfig: true,
+  });
 
-    options: {
-      [`@libs/${name}`]: {
-        import: `@libs/${name}`,
-        requiredVersion: false,
+const makePagesModule = (name: string) =>
+  makeSharedModule({
+    parentFolderName: 'pages',
+    name: name,
+    hasPathsInTsConfig: false,
+  });
+
+function makeSharedModule(params: {
+  parentFolderName: string;
+  name: string;
+  hasPathsInTsConfig: boolean;
+}): SharedModule {
+  const { parentFolderName, name, hasPathsInTsConfig } = params;
+
+  // assumption, that all modules called in @<folder>/<name> pattern
+  // '@libs/core' or '@pages/welcome' etc..
+  const moduleNameInPackageJson = `@${parentFolderName}/${name}`;
+
+  const sharedModule: SharedModule = {
+    sharedConfig: {
+      [moduleNameInPackageJson]: {
+        import: moduleNameInPackageJson,
+        requiredVersion: false, // check or not the package version
       },
     },
   };
+
+  if (hasPathsInTsConfig) {
+    sharedModule.typescriptPathAliasesResolvePlugin = new TsconfigPathsPlugin({
+      configFile: path.join(paths.repoRoot, parentFolderName, name, 'tsconfig.json'),
+      logLevel: 'INFO',
+      mainFields: ['browser', 'module', 'main'],
+    });
+  }
+
+  return sharedModule;
 }
 
-const tsLibs = [
+const sharedModules = [
+  makeLibsModule('components'),
+  makeLibsModule('core'),
+  makeLibsModule('utils'),
   //
-  makeTsLib('components'),
-  makeTsLib('core'),
-  makeTsLib('utils'),
+  makePagesModule('about'),
+  makePagesModule('welcome'),
 ];
 
 const commonConfig = (mode: Configuration['mode']): Configuration => {
@@ -53,7 +85,7 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
 
       resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        plugins: [...tsLibs.map((lib) => lib.resolvePlugin)],
+        plugins: [...sharedModules.map((module) => module.typescriptPathAliasesResolvePlugin).filter(Boolean)],
       },
 
       plugins: [
@@ -80,15 +112,17 @@ const commonConfig = (mode: Configuration['mode']): Configuration => {
               react: {
                 import: 'react',
                 requiredVersion: false,
+                singleton: true, // only a single version of the shared module is allowed
               },
             },
             {
               'react-dom': {
                 import: 'react-dom',
                 requiredVersion: false,
+                singleton: true, // only a single version of the shared module is allowed
               },
             },
-            ...tsLibs.map((lib) => lib.options),
+            ...sharedModules.map((module) => module.sharedConfig),
           ],
         }),
       ],

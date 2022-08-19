@@ -1,4 +1,4 @@
-import { Configuration } from "webpack";
+import { Configuration } from 'webpack';
 
 function fontRule(): Configuration {
   return {
@@ -6,9 +6,9 @@ function fontRule(): Configuration {
       rules: [
         {
           test: /\.(ttf)$/,
-          type: "asset/resource",
+          type: 'asset/resource',
           generator: {
-            filename: "fonts/[name].[ext]",
+            filename: 'fonts/[name].[ext]',
           },
         },
       ],

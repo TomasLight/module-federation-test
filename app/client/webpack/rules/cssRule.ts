@@ -1,13 +1,13 @@
-import path from "path";
-import { LoaderContext } from "webpack";
-import { Configuration } from "webpack";
-import { getHashDigest, interpolateName } from "loader-utils";
+import path from 'path';
+import { LoaderContext } from 'webpack';
+import { Configuration } from 'webpack';
+import { getHashDigest, interpolateName } from 'loader-utils';
 
 const cssRegex = /\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
-function cssRule(mode: Configuration["mode"]) {
+function cssRule(mode: Configuration['mode']) {
   const dontDropUnusedCssImports = {
     // disable tree-shaking for regular (not module) scss files
     // `import 'myStyles.scss';`
@@ -20,7 +20,7 @@ function cssRule(mode: Configuration["mode"]) {
       rules: [
         {
           test: cssRegex,
-          use: ["style-loader", "css-loader", "postcss-loader"],
+          use: ['style-loader', 'css-loader', 'postcss-loader'],
           ...dontDropUnusedCssImports,
         },
         {
@@ -30,11 +30,11 @@ function cssRule(mode: Configuration["mode"]) {
 
           use: [
             // to inject the result into the DOM as a style block
-            "style-loader",
+            'style-loader',
 
             // to convert the resulting CSS to Javascript to be bundled (modules:true to rename CSS classes in output to cryptic identifiers, except if wrapped in a :global(...) pseudo class)
             {
-              loader: "css-loader",
+              loader: 'css-loader',
               options: {
                 modules: {
                   getLocalIdent: originalNamedIdentifier(),
@@ -43,10 +43,10 @@ function cssRule(mode: Configuration["mode"]) {
             },
 
             // future CSS syntax
-            "postcss-loader",
+            'postcss-loader',
 
             // to convert SASS to CSS
-            "sass-loader",
+            'sass-loader',
           ],
         },
         {
@@ -55,11 +55,11 @@ function cssRule(mode: Configuration["mode"]) {
 
           use: [
             // to inject the result into the DOM as a style block
-            "style-loader",
+            'style-loader',
 
             // to convert the resulting CSS to Javascript to be bundled (modules:true to rename CSS classes in output to cryptic identifiers, except if wrapped in a :global(...) pseudo class)
             {
-              loader: "css-loader",
+              loader: 'css-loader',
               options: {
                 modules: {
                   getLocalIdent: namedModuleIdentifier(),
@@ -68,10 +68,10 @@ function cssRule(mode: Configuration["mode"]) {
             },
 
             // future CSS syntax
-            "postcss-loader",
+            'postcss-loader',
 
             // to convert SASS to CSS
-            "sass-loader",
+            'sass-loader',
 
             // to generate a .d.ts module next to the .scss file (also requires a declaration.d.ts with "declare modules '*.scss';" in it to tell TypeScript that "import styles from './styles.scss';" means to load the module "./styles.scss.d.td")
             // { loader: "css-modules-typescript-loader" },
@@ -102,21 +102,16 @@ function namedModuleIdentifier() {
   ) => {
     const relativePath = path
       .relative(
-        // "<path-to-repo>\i-c-n\application"
+        // "<path-to-repo>\app"
         context.rootContext,
-        // "<path-to-repo>\i-c-n\application\src\health\HealthDialog.module.scss"
+        // "<path-to-repo>\app\src\health\HealthDialog.module.scss"
         context.resourcePath
       )
       // to "src/health/HealthDialog.module.scss"
-      .replace(/\\+/g, "/");
+      .replace(/\\+/g, '/');
 
     // Generate a hash to make the class name unique.
-    const hash = getHashDigest(
-      Buffer.from(`filePath:${relativePath}#className:${className}`),
-      "md5",
-      "base64",
-      5
-    );
+    const hash = getHashDigest(Buffer.from(`filePath:${relativePath}#className:${className}`), 'md5', 'base64', 5);
 
     return (
       interpolateName(
@@ -126,7 +121,7 @@ function namedModuleIdentifier() {
         options
       )
         // "HealthDialog.module_errorList_hash" -> "HealthDialog_errorList_hash"
-        .replace(/\.module_/, "_")
+        .replace(/\.module_/, '_')
     );
   };
 }

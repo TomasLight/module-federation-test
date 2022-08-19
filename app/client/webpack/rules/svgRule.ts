@@ -1,4 +1,4 @@
-import { Configuration } from "webpack";
+import { Configuration } from 'webpack';
 
 function svgRule(): Configuration {
   return {
@@ -6,7 +6,7 @@ function svgRule(): Configuration {
       rules: [
         {
           test: /\.svg/,
-          type: "asset/inline",
+          type: 'asset/inline',
         },
       ],
     },

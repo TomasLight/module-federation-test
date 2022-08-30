@@ -1,7 +1,7 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import path from 'path';
+import { join } from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import { Configuration, container, ProgressPlugin, ResolvePluginInstance } from 'webpack';
 import { merge } from 'webpack-merge';
@@ -30,7 +30,7 @@ const makePagesModule = (name: string) =>
   makeSharedModule({
     parentFolderName: 'pages',
     name: name,
-    hasPathsInTsConfig: false,
+    hasPathsInTsConfig: true,
   });
 
 function makeSharedModule(params: {
@@ -55,7 +55,7 @@ function makeSharedModule(params: {
 
   if (hasPathsInTsConfig) {
     sharedModule.typescriptPathAliasesResolvePlugin = new TsconfigPathsPlugin({
-      configFile: path.join(paths.repoRoot, parentFolderName, name, 'tsconfig.json'),
+      configFile: join(paths.repoRoot, parentFolderName, name, 'tsconfig.json'),
       logLevel: 'INFO',
       mainFields: ['browser', 'module', 'main'],
     });

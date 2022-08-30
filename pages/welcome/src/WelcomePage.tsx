@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import classes from './WelcomePage.module.scss';
+import { WelcomeButton } from '~welcome/WelcomeButton';
 
 const WelcomePage = () => {
   const history = useHistory();
@@ -7,14 +7,11 @@ const WelcomePage = () => {
     <div>
       <p>Welcome Page</p>
 
-      <button
-        className={classes.button}
+      <WelcomeButton
         onClick={() => {
           history.push('/about');
         }}
-      >
-        go to about page
-      </button>
+      />
     </div>
   );
 };

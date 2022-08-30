@@ -1,6 +1,5 @@
-import path from 'path';
-import { LoaderContext } from 'webpack';
-import { Configuration } from 'webpack';
+import { relative } from 'path';
+import { LoaderContext, Configuration } from 'webpack';
 import { getHashDigest, interpolateName } from 'loader-utils';
 
 const cssRegex = /\.css$/;
@@ -100,13 +99,12 @@ function namedModuleIdentifier() {
     className: string,
     options?: any
   ) => {
-    const relativePath = path
-      .relative(
-        // "<path-to-repo>\app"
-        context.rootContext,
-        // "<path-to-repo>\app\src\health\HealthDialog.module.scss"
-        context.resourcePath
-      )
+    const relativePath = relative(
+      // "<path-to-repo>\app"
+      context.rootContext,
+      // "<path-to-repo>\app\src\health\HealthDialog.module.scss"
+      context.resourcePath
+    )
       // to "src/health/HealthDialog.module.scss"
       .replace(/\\+/g, '/');
 

@@ -1,5 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CoreContext } from '@libs/core';
+import { guid } from '@libs/utils';
 import { DEFAULT_BUTTON_NAME } from '~components/constants';
 import classes from './Button.module.scss';
 
@@ -9,6 +10,8 @@ type Props = {
 
 const Button = (props: Props) => {
   const { onClick } = props;
+
+  const [id] = useState(() => guid());
   const context = useContext(CoreContext);
 
   let buttonName = DEFAULT_BUTTON_NAME;
@@ -17,7 +20,7 @@ const Button = (props: Props) => {
   }
 
   return (
-    <button className={classes.root} onClick={() => onClick()}>
+    <button id={id} className={classes.root} onClick={() => onClick()}>
       {buttonName}
     </button>
   );

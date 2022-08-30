@@ -21,6 +21,8 @@ const config: InitialOptionsTsJest = {
       prefix: utilsPath,
     }),
     '\\.(scss)$': 'identity-obj-proxy',
+    // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
+    uuid: require.resolve('uuid'),
   },
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
@@ -36,4 +38,4 @@ const config: InitialOptionsTsJest = {
   },
 };
 
-module.exports = config;
+export default config;
